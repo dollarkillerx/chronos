@@ -1,15 +1,17 @@
 package lexertoken
 
-type Set map[string]bool
+type Set map[string]bool // true is Struct
 
 type Chronos struct {
 	R Set
 	P Set
-	M []Node
+	M Matchers
 }
 
+type Matchers []MatchersItem
+
 // 计算单位定义
-type Node struct {
+type MatchersItem struct {
 	Type        ChronosType
 	Linker      LinkerType
 	Participant []ParticipantItem
@@ -17,7 +19,6 @@ type Node struct {
 
 type ParticipantItem struct {
 	Participant string
-	Object      string
 }
 
 type LinkerType string
