@@ -13,16 +13,34 @@ Chronos   Fast and efficient permission validation  (ABAC/RBAC)
 - [ ] 兼容Casbin API
 
 ### Base Config
+ABAC
 ``` 
 [request_definition]
 r = sub, obj
 
 [policy_definition]
-p = name, obj, sub_rule
+p = name, obj, sub_rule                     # sub_rule: r.sub.Time<1635936065, r.sub.Count<20
 
-[policy_effect]                             # 暂时不适配 原谅我编译原理挂科了
+[policy_effect]                             # 暂时不适配 
+e = some(where (p.eft == allow)) 
+
+[matchers]
+m = eval(p.sub_rule) && r.obj == p.obj  && r.sub.Name == p.name
+```
+RBAC
+``` 
+[request_definition]
+r = sub, obj, act
+
+[policy_definition]
+p = sub, obj, act
+
+[role_definition]
+g = _, _
+
+[policy_effect]                              # 暂时不适配 
 e = some(where (p.eft == allow))
 
 [matchers]
-m = eval(p.sub_rule) && r.obj == p.obj  && r.sub == p.name
+m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
 ```
