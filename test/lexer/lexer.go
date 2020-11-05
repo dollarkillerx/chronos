@@ -98,3 +98,17 @@ func (l *Lexer) Errorf(format string, args ...interface{}) LexFn {
 
 	return nil
 }
+
+//从通道中返回下一个令牌
+func (l *Lexer) NextToken() lexertoken.Token {
+	for {
+		select {
+		case token := <-l.Tokens:
+			return token
+		default:
+			l.State = l.State(l)
+		}
+	}
+
+	panic("Lexer.NextToken reached an invalid state!!")
+}

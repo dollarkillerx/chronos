@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// start
+// 找到启 [
 func LexBegin(lexer *Lexer) LexFn {
 	lexer.SkipWhiteSpace()
 	if strings.HasPrefix(lexer.InputToEnd(), lexertoken.LEFT_BRACKET) {

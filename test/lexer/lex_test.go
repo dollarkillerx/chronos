@@ -2,14 +2,15 @@ package lexer
 
 import (
 	"log"
+	"strings"
 	"testing"
 )
 
 var TestSkipWhiteSpace1 = `
-                    sd
-我的天
-这是测试代码
-我雷德去
+        
+ [Stats]
+
+ va = sdsd
 `
 
 func TestSkipWhiteSpace(t *testing.T) {
@@ -19,4 +20,10 @@ func TestSkipWhiteSpace(t *testing.T) {
 	log.Println(lexer.Pos)
 	log.Println(lexer.Width)
 	log.Println(lexer.Input[:lexer.Pos])
+}
+
+func TestInputToEnd(t *testing.T) {
+	lexer := Lexer{Input: TestSkipWhiteSpace1}
+	lexer.SkipWhiteSpace()
+	log.Println(strings.HasPrefix(lexer.InputToEnd(), "["))
 }
