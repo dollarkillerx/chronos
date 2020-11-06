@@ -1,22 +1,115 @@
 package parser
 
 import (
-	"github.com/dollarkillerx/chronos/config/chronos"
+	"encoding/json"
+	"fmt"
+	"github.com/dollarkillerx/chronos/config/lexer_calculation"
 	"io/ioutil"
 	"log"
 	"strings"
 
+	"github.com/dollarkillerx/chronos/config/chronos_token"
 	"github.com/dollarkillerx/chronos/config/lexer"
 	"github.com/dollarkillerx/chronos/config/lexertoken"
 )
 
-func Parse(filename string) (chronos.Chronos, error) {
+func Parse(filename string) (output chronos_token.Chronos, err error) {
 	conf, err := ParseConf(filename)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	log.Println(conf["matchers"])
+	// request_definition
+	reqs, ex := conf["request_definition"]
+	if !ex {
+		return output, fmt.Errorf("Missing required keywords")
+	}
+	if len(reqs) == 0 {
+		return output, fmt.Errorf("Missing required keywords")
+	}
+	req := strings.Split(reqs[0].Value, ",")
+	r := chronos_token.Set{}
+	for _, v := range req {
+		r[strings.TrimSpace(v)] = false
+	}
+	output.R = r
+
+	// policy_definition
+	pols, ex := conf["policy_definition"]
+	if !ex {
+		return output, fmt.Errorf("Missing required keywords")
+	}
+	if len(pols) == 0 {
+		return output, fmt.Errorf("Missing required keywords")
+	}
+	pol := strings.Split(pols[0].Value, ",")
+	p := chronos_token.Set{}
+	for _, v := range pol {
+		p[strings.TrimSpace(v)] = false
+	}
+	output.P = p
+	// matchers
+	mats, ex := conf["matchers"]
+	if !ex {
+		return output, fmt.Errorf("Missing required keywords")
+	}
+	if len(mats) == 0 {
+		return output, fmt.Errorf("Missing required keywords")
+	}
+	mat := mats[0]
+
+	lexing := lexer_calculation.BeginLexing(mat.Value)
+
+	var matItem chronos_token.MatchersItem
+	var value string
+
+loop:
+	for {
+		token := lexing.NextToken()
+		value = strings.TrimSpace(token.Value)
+		//log.Printf("Typ: %s Val: %s\n", token.Type, token.Value)
+
+		switch token.Type {
+		case lexer_calculation.TOKEN_EOF:
+			if len(matItem.Participant) != 0 {
+				matItem.Linker = chronos_token.LINKER_END
+				matItem.Participant = append(matItem.Participant, chronos_token.ParticipantItem{Participant: value})
+				output.M = append(output.M, matItem)
+			}
+			break loop
+		case lexer_calculation.TOKEN_EVAL:
+			matItem.Type = chronos_token.CHRONOS_EVAL
+		case lexer_calculation.TOKEN_EQUAL_SIGN:
+			matItem.Type = chronos_token.CHRONOS_EQ
+		case lexer_calculation.TOKEN_AND:
+			matItem.Linker = chronos_token.LINKER_AND
+			output.M = append(output.M, matItem)
+			matItem = chronos_token.MatchersItem{}
+		case lexer_calculation.TOKEN_OR:
+			matItem.Linker = chronos_token.LINKER_OR
+			output.M = append(output.M, matItem)
+			matItem = chronos_token.MatchersItem{}
+		case lexer_calculation.TOKEN_SECTION:
+			matItem.Participant = append(matItem.Participant, chronos_token.ParticipantItem{Participant: value})
+		case lexer_calculation.TOKEN_KEY:
+			if strings.Count(value, ".") >= 2 {
+				for k := range output.R {
+					if strings.Index(value, k) != -1 {
+						output.R[k] = true
+					}
+				}
+			}
+			matItem.Participant = append(matItem.Participant, chronos_token.ParticipantItem{Participant: value})
+		case lexer_calculation.TOKEN_VALUE:
+			matItem.Participant = append(matItem.Participant, chronos_token.ParticipantItem{Participant: value})
+		}
+	}
+
+	marshal, err := json.Marshal(output)
+	if err == nil {
+		log.Println(string(marshal))
+	}
+	return chronos_token.Chronos{}, nil
 }
 
 func ParseConf(filename string) (Sections, error) {

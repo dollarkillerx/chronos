@@ -1,4 +1,4 @@
-package chronos
+package chronos_token
 
 type Set map[string]bool // true is Struct
 
@@ -24,15 +24,15 @@ type ParticipantItem struct {
 type LinkerType string
 
 const (
-	LinkerAnd LinkerType = "and"
-	LinkerOr  LinkerType = "or"
-	LinkerEnd LinkerType = "end"
+	LINKER_AND LinkerType = "and"
+	LINKER_OR  LinkerType = "or"
+	LINKER_END LinkerType = "end"
 )
 
 type ChronosType string
 
 const (
-	ChronosEval  ChronosType = "eval"
-	ChronosEq    ChronosType = "eq"
-	ChronosCombo ChronosType = "combo"
+	CHRONOS_EVAL  ChronosType = "eval"
+	CHRONOS_EQ    ChronosType = "eq"
+	CHRONOS_COMBO ChronosType = "combo"
 )
