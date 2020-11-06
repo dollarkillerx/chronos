@@ -13,13 +13,13 @@ type RedisAdapter struct {
 	redisPool *redis.Pool
 }
 
-func New(uri string, auth ...string) adapter.Adapter {
+func New(uri string, connection int, auth ...string) adapter.Adapter {
 	output := &RedisAdapter{}
 	var passwd string
 	if len(auth) == 1 {
 		passwd = auth[0]
 	}
-	output.redisPool = newRedisPool(uri, passwd)
+	output.redisPool = newRedisPool(uri, passwd, connection)
 	return output
 }
 
@@ -71,11 +71,11 @@ func (r *RedisAdapter) GetRule(rules ...string) (rule string, err error) {
 }
 
 // newRedisPool:创建redis连接池
-func newRedisPool(host string, password string) *redis.Pool {
+func newRedisPool(host string, password string, connection int) *redis.Pool {
 	return &redis.Pool{
-		MaxIdle:     50,                // 池中的最大空闲连接数
-		MaxActive:   30,                // 最大连接数
-		IdleTimeout: 300 * time.Second, // 超时回收
+		MaxIdle:     connection,       // 池中的最大空闲连接数
+		MaxActive:   connection,       // 最大连接数
+		IdleTimeout: 10 * time.Second, // 超时回收
 		Dial: func() (conn redis.Conn, e error) {
 			// 1. 打开连接
 			dial, e := redis.Dial("tcp", host)
