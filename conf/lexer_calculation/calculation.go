@@ -5,7 +5,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/dollarkillerx/chronos/config/lexertoken"
+	"github.com/dollarkillerx/chronos/conf/lexertoken"
 )
 
 type LexerCalculation struct {

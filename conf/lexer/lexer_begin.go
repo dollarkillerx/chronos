@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"github.com/dollarkillerx/chronos/config/lexertoken"
+	"github.com/dollarkillerx/chronos/conf/lexertoken"
 	"strings"
 )
 

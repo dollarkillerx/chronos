@@ -3,7 +3,7 @@ package lexer
 import (
 	"strings"
 
-	"github.com/dollarkillerx/chronos/config/lexertoken"
+	"github.com/dollarkillerx/chronos/conf/lexertoken"
 )
 
 func LexSection(lexer *Lexer) LexFn {

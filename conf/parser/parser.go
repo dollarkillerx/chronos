@@ -3,14 +3,14 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dollarkillerx/chronos/config/lexer_calculation"
 	"io/ioutil"
 	"log"
 	"strings"
 
-	"github.com/dollarkillerx/chronos/config/chronos_token"
-	"github.com/dollarkillerx/chronos/config/lexer"
-	"github.com/dollarkillerx/chronos/config/lexertoken"
+	"github.com/dollarkillerx/chronos/conf/chronos_token"
+	"github.com/dollarkillerx/chronos/conf/lexer"
+	"github.com/dollarkillerx/chronos/conf/lexer_calculation"
+	"github.com/dollarkillerx/chronos/conf/lexertoken"
 )
 
 func Parse(filename string) (output chronos_token.Chronos, err error) {

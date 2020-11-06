@@ -1,6 +1,6 @@
 package lexer
 
-import "github.com/dollarkillerx/chronos/config/lexertoken"
+import "github.com/dollarkillerx/chronos/conf/lexertoken"
 
 func LexLeftBracket(lexer *Lexer) LexFn {
 	lexer.Pos += len(lexertoken.LEFT_BRACKET)

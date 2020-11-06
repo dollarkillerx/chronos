@@ -1,8 +1,8 @@
-package config
+package conf
 
 import (
 	"encoding/json"
-	"github.com/dollarkillerx/chronos/config/parser"
+	"github.com/dollarkillerx/chronos/conf/parser"
 	"log"
 	"testing"
 )
