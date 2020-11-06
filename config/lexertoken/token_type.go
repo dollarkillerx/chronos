@@ -1,17 +1,16 @@
 package lexertoken
 
-type TokenType int
+type TokenType string
 
 const (
-	TOKEN_ERROR TokenType = iota
-	TOKEN_EOF
+	TOKEN_ERROR TokenType = "err"
+	TOKEN_EOF   TokenType = "eof"
 
-	TOKEN_LEFT_BRACKET
-	TOKEN_RIGHT_BRACKET
-	TOKEN_EQUAL_SIGN
-	TOKEN_NEWLINE
+	TOKEN_LEFT_BRACKET  TokenType = "left_bracket"
+	TOKEN_RIGHT_BRACKET TokenType = "right_bracket"
+	TOKEN_EQUAL_SIGN    TokenType = "eq"
 
-	TOKEN_SECTION
-	TOKEN_KEY
-	TOKEN_VALUE
+	TOKEN_SECTION TokenType = "section"
+	TOKEN_KEY     TokenType = "key"
+	TOKEN_VALUE   TokenType = "val"
 )

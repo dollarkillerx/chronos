@@ -1,11 +1,11 @@
 package lexer
 
 import (
-	"github.com/dollarkillerx/chronos/test/lexertoken"
+	"github.com/dollarkillerx/chronos/config/lexertoken"
 	"strings"
 )
 
-// 找到启 [
+// 找到开始[
 func LexBegin(lexer *Lexer) LexFn {
 	lexer.SkipWhiteSpace()
 	if strings.HasPrefix(lexer.InputToEnd(), lexertoken.LEFT_BRACKET) {
