@@ -25,7 +25,7 @@ func New(uri string, auth ...string) adapter.Adapter {
 
 func (r *RedisAdapter) AddRule(rules ...string) error {
 	if len(rules) <= 1 {
-		return fmt.Errorf("what fuck?")
+		return fmt.Errorf("Rule less than 1")
 	}
 	var key []string
 	key = append(rules[:len(rules)-1])
@@ -43,7 +43,7 @@ func (r *RedisAdapter) AddRule(rules ...string) error {
 
 func (r *RedisAdapter) RemoveRule(rules ...string) error {
 	if len(rules) <= 1 {
-		return fmt.Errorf("what fuck?")
+		return fmt.Errorf("Rule less than 1")
 	}
 	var key []string
 	key = append(rules[:len(rules)-1])
@@ -61,16 +61,13 @@ func (r *RedisAdapter) RemoveRule(rules ...string) error {
 
 func (r *RedisAdapter) GetRule(rules ...string) (rule string, err error) {
 	if len(rules) <= 1 {
-		return "", fmt.Errorf("what fuck?")
+		return "", fmt.Errorf("Rule less than 1")
 	}
-	var key []string
-	key = append(rules[:len(rules)-1])
-	val := rules[len(rules)-1]
 
 	rd := r.redisPool.Get()
 	defer rd.Close()
 
-	return redis.String(rd.Do("del", utils.Combinations(key, ","), val))
+	return redis.String(rd.Do("get", utils.Combinations(rules, ",")))
 }
 
 // newRedisPool:创建redis连接池

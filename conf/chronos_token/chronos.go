@@ -1,10 +1,13 @@
 package chronos_token
 
-type Set map[string]bool // true is Struct
+type NodeItem struct {
+	Data     string
+	IsStruct bool
+}
 
 type Chronos struct {
-	R Set
-	P Set
+	R []NodeItem
+	P []string
 	M Matchers
 }
 

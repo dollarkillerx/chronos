@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -28,9 +27,9 @@ func Parse(filename string) (output chronos_token.Chronos, err error) {
 		return output, fmt.Errorf("Missing required keywords")
 	}
 	req := strings.Split(reqs[0].Value, ",")
-	r := chronos_token.Set{}
+	var r []chronos_token.NodeItem
 	for _, v := range req {
-		r[strings.TrimSpace(v)] = false
+		r = append(r, chronos_token.NodeItem{Data: strings.TrimSpace(v)})
 	}
 	output.R = r
 
@@ -43,11 +42,10 @@ func Parse(filename string) (output chronos_token.Chronos, err error) {
 		return output, fmt.Errorf("Missing required keywords")
 	}
 	pol := strings.Split(pols[0].Value, ",")
-	p := chronos_token.Set{}
-	for _, v := range pol {
-		p[strings.TrimSpace(v)] = false
+	for k, v := range pol {
+		pol[k] = strings.TrimSpace(v)
 	}
-	output.P = p
+	output.P = pol
 	// matchers
 	mats, ex := conf["matchers"]
 	if !ex {
@@ -93,9 +91,10 @@ loop:
 			matItem.Participant = append(matItem.Participant, chronos_token.ParticipantItem{Participant: value})
 		case lexer_calculation.TOKEN_KEY:
 			if strings.Count(value, ".") >= 2 {
-				for k := range output.R {
-					if strings.Index(value, k) != -1 {
-						output.R[k] = true
+				for k, v := range output.R {
+					if strings.Index(value, v.Data) != -1 {
+						v.IsStruct = true
+						output.R[k] = v
 					}
 				}
 			}
@@ -105,11 +104,7 @@ loop:
 		}
 	}
 
-	marshal, err := json.Marshal(output)
-	if err == nil {
-		log.Println(string(marshal))
-	}
-	return chronos_token.Chronos{}, nil
+	return output, nil
 }
 
 func ParseConf(filename string) (Sections, error) {
