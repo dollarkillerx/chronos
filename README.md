@@ -44,3 +44,9 @@ e = some(where (p.eft == allow))
 [matchers]
 m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
 ```
+
+### Casbin watch
+![](./README/casbin_watchers.png)
+Casbin 问题 
+- 1.初始化数据必须保持一致
+- 2.无法解决脑裂问题
